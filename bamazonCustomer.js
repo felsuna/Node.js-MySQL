@@ -35,14 +35,14 @@ function afterConnection() {
             console.log(answers);
             connection.query(`SELECT * FROM products WHERE item_id = ${answers.question1}`, function (err, res) {
                 if (err) throw err;
-console.log(answers.question1)
+                console.log(answers.question1)
                 if (res[0].stock_quantity >= answers.question2) {
-                    var newQuantity = res[0].stock_quantity - answers.question2;
-                    var total = answers.question2 * res[0].price;
-
+                    const newQuantity = res[0].stock_quantity - answers.question2;
+                    const total = answers.question2 * res[0].price;
+                    const productName = res[0].product_name;
                     connection.query(`UPDATE products SET stock_quantity = ${newQuantity} WHERE item_id= ${answers.question1}`, function (err, res) {
                         if (err) throw err;
-                        console.log(`Congrats your order is complete, your total cost is $${total}${"\n"} You ordered: ${"\n"} ${answers.question2}`);
+                        console.log(`Congrats your order is complete, your total cost is $${total.toFixed(2)}${"\n"} You ordered: ${"\n"} ${answers.question2} ${productName}s`);
                         connection.end();
                     })
                 } else {
