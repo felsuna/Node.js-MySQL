@@ -11,14 +11,17 @@ const connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log(`Connected with ID: ${connection.threadId}`);
+    console.log(`Connected with ID: ${connection.threadId}${"\n"}`);
     afterConnection();
 });
 
 function afterConnection() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-        console.log(res);
+
+        for (var i = 0; i < res.length; i++) {
+            console.log(`Item ID: ${res[i].item_id}${"\n"}Product name: ${res[i].product_name}${"\n"}Department name: ${res[i].department_name}${"\n"}Price: ${res[i].price}${"\n"}Stock quantity: ${res[i].stock_quantity}${"\n"}`)
+        }
 
         inquirer.prompt([
             {
@@ -40,9 +43,9 @@ function afterConnection() {
                     const newQuantity = res[0].stock_quantity - answers.question2;
                     const total = answers.question2 * res[0].price;
                     const productName = res[0].product_name;
-                    connection.query(`UPDATE products SET stock_quantity = ${newQuantity} WHERE item_id= ${answers.question1}`, function (err, res) {
+                    connection.query(`UPDATE products SET stock_quantity = ${newQuantity} WHERE item_id = ${answers.question1}`, function (err, res) {
                         if (err) throw err;
-                        console.log(`Congrats your order is complete, your total cost is $${total.toFixed(2)}${"\n"} You ordered: ${"\n"} ${answers.question2} ${productName}s`);
+                        console.log(`${"\n"}Congrats your order is complete, your total cost is $${total.toFixed(2)}${"\n"} You ordered: ${"\n"} ${answers.question2} ${productName}s`);
                         connection.end();
                     })
                 } else {
